@@ -16,7 +16,7 @@ class Room(models.Model):       #OEM: id gets created automatically
     name = models.CharField(max_length=200)
     #OEM: null=True: means the field can be null in the db, blank=True: means the form can be empty
     description = models.TextField(null=True, blank=True)       
-    #OEM: don't forget to run the migration after each modification of the model (python3 manage.py makemigrations   python3 manage.py migrate)
+    #OEM: don't forget to run the migration after each modification of the model (python3 manage.py makemigrations; python3 manage.py migrate)
     participants = models.ManyToManyField(User, related_name='participants', blank=True)    #OEM: See what is the role of related_name
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)   #field change only the first time##
