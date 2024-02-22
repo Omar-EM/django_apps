@@ -9,5 +9,6 @@ router.register('profile', views.UserProfileViewSet)
 
 urlpatterns = [
     path('hello-view/', views.HelloApiView.as_view()),    # If an HTTP get req is made, will call (get())
+    path('login/', views.UserLoginApiView.as_view()),
     path('', include(router.urls))
 ]

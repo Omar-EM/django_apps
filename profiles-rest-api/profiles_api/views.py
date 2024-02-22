@@ -4,6 +4,9 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import filters
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.settings import api_settings
+
 
 from . import serializers
 from . import models
@@ -108,3 +111,14 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     # This 2 lines adds searchfilter capability to our view (user the fields name and email)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name', 'email',)
+
+
+class UserLoginApiView(ObtainAuthToken):
+    """Handle creating user authentication tokens
+        So, if we go to /api/login, and enter email+pwd, we'll get the auth token
+        This auth token need to be set in the "authorization" header of the HTTP request
+        Authorization: Token <token_value>
+    """
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+
+
