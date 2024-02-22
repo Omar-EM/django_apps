@@ -1,3 +1,6 @@
 from django.contrib import admin
+from . import models
 
-# Register your models here.
+
+# To make the models accessible to the django admin UI:
+admin.site.register(models.UserProfile)
