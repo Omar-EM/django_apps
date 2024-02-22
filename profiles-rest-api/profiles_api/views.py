@@ -6,6 +6,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework import filters
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
+from rest_framework.permissions import IsAuthenticated
 
 
 from . import serializers
@@ -99,6 +100,7 @@ class HelloViewSet(viewsets.ViewSet):
 # /api/profile    --->   list all profiles when HTTP GET method is called; create new profile when HTTP POST is called
 # /api/profile/<profile_id>   --->  view specific profile details with HTTP GET; update object using HTTP PUT/PATCH;
 # remove it completely using HTTP DELETE
+# All of this is done using the following 2 classes
 
 class UserProfileViewSet(viewsets.ModelViewSet):
     """Handle creating and updating profiles"""
@@ -120,5 +122,23 @@ class UserLoginApiView(ObtainAuthToken):
         Authorization: Token <token_value>
     """
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+
+
+# NEXT: We'll build a feed item API
+# /api/feed ----> list all feed items; GET (list feed items); POST (create feed item for logged in user)
+# /api/feed/<feed_item_id> ---> manage specific feed items; GET (feed items); PUT/PATCH (update); DELETE feed item
+
+class UserProfileFeedViewSet(viewsets.ModelViewSet):
+    """Handles creating, reading and updating profile feed items"""
+    authentication_classes = (TokenAuthentication,)
+    serializer_class = serializers.ProfileFeedItemSerializer
+    queryset = models.ProfileFeedItem.objects.all()
+    # Limit the feed to only authenticated users
+    permission_classes = (permissions.UpdateOwnStatus, IsAuthenticated)
+
+    def perform_create(self, serializer):       # Gets called each time we do an HTTP POST to our viewset
+        """Sets the user profile to the logged-in user"""
+        serializer.save(user_profile=self.request.user)     # If the user is authenticated, it self.req.user returns that user
+
 
 
