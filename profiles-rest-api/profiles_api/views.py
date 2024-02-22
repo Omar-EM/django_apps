@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
+from rest_framework import filters
 
 from . import serializers
 from . import models
@@ -100,5 +101,10 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     """Handle creating and updating profiles"""
     serializer_class = serializers.UserPorfileSerializer
     queryset = models.UserProfile.objects.all()
+    # This line adds how we authenticate (using auth token)
     authentication_classes = (TokenAuthentication,)
+    # this line adds authorizations capablities to our API viewset
     permission_classes = (permissions.UpdateOwnProfile,)    # This is the line that calls the has_object_permission()
+    # This 2 lines adds searchfilter capability to our view (user the fields name and email)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name', 'email',)
